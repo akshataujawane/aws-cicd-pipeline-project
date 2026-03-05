@@ -1,5 +1,5 @@
 ############################################
-# 1️⃣ EC2 ROLE (For EC2 + CodeDeploy + SSM)
+# 1️⃣ EC2 ROLE (EC2 + CodeDeploy + S3 + SSM)
 ############################################
 
 resource "aws_iam_role" "ec2_role" {
@@ -17,13 +17,25 @@ resource "aws_iam_role" "ec2_role" {
   })
 }
 
-# Required for SSM communication (Modern AWS)
+# Allow EC2 to communicate with AWS Systems Manager
 resource "aws_iam_role_policy_attachment" "ec2_ssm_attach" {
   role       = aws_iam_role.ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-# Instance profile (VERY IMPORTANT for EC2)
+# Allow EC2 to download deployment bundle from S3
+resource "aws_iam_role_policy_attachment" "ec2_s3_access" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+}
+
+# Required for CodeDeploy agent on EC2
+resource "aws_iam_role_policy_attachment" "ec2_codedeploy_attach" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy"
+}
+
+# Instance profile for EC2
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ec2-instance-profile"
   role = aws_iam_role.ec2_role.name
@@ -72,12 +84,14 @@ resource "aws_iam_role" "codebuild_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "codebuild_attach_1" {
+# CodeBuild full access for building projects
+resource "aws_iam_role_policy_attachment" "codebuild_policy" {
   role       = aws_iam_role.codebuild_role.name
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess"
 }
 
-resource "aws_iam_role_policy_attachment" "codebuild_attach_2" {
+# Access to artifact bucket
+resource "aws_iam_role_policy_attachment" "codebuild_s3_access" {
   role       = aws_iam_role.codebuild_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
@@ -101,7 +115,14 @@ resource "aws_iam_role" "pipeline_role" {
   })
 }
 
+# Allow pipeline to interact with all services
 resource "aws_iam_role_policy_attachment" "pipeline_attach" {
   role       = aws_iam_role.pipeline_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess"
+}
+
+# Allow pipeline to access artifacts in S3
+resource "aws_iam_role_policy_attachment" "pipeline_s3_access" {
+  role       = aws_iam_role.pipeline_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
