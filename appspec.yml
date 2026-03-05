@@ -1,8 +1,10 @@
 version: 0.0
 os: linux
+
 files:
-  - source: /
+  - source: index.html
     destination: /var/www/html
+
 hooks:
   ApplicationStart:
     - location: scripts/start.sh
