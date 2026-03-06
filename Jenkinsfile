@@ -6,7 +6,7 @@ stages {
 
     stage('Clone Repository') {
         steps {
-            git branch: 'dev',
+            git branch: 'prod',
             url: 'https://github.com/akshataujawane/aws-cicd-pipeline-project.git',
             credentialsId: 'github-credentials'
         }
