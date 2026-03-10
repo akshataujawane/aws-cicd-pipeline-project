@@ -1,10 +1,15 @@
 #!/bin/bash
+set -e
 
 echo "Starting deployment..."
 
-sudo apt update -y
-sudo apt install apache2 -y
+# Install Apache only if not installed
+if ! command -v apache2 >/dev/null 2>&1; then
+  apt-get update -y
+  apt-get install apache2 -y
+fi
 
-sudo systemctl restart apache2
+systemctl enable apache2
+systemctl restart apache2
 
 echo "Deployment successful"
