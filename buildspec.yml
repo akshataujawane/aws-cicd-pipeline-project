@@ -1,12 +1,15 @@
-version: 0.0
-os: linux
+version: 0.2
 
-files:
-  - source: /
-    destination: /var/www/html
+phases:
+  install:
+    commands:
+      - echo "Installing dependencies"
 
-hooks:
-  ApplicationStart:
-    - location: scripts/start.sh
-      timeout: 300
-      runas: root
+  build:
+    commands:
+      - echo "Build started"
+      - echo "Preparing artifacts"
+
+artifacts:
+  files:
+    - '**/*'
