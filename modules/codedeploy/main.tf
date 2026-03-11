@@ -3,7 +3,7 @@
 ############################################
 
 resource "aws_codedeploy_app" "app" {
-  name = var.app_name
+  name             = var.app_name
   compute_platform = "Server"
 }
 
@@ -19,12 +19,10 @@ resource "aws_codedeploy_deployment_group" "deployment_group" {
 
   deployment_config_name = "CodeDeployDefault.AllAtOnce"
 
-  ec2_tag_set {
-    ec2_tag_filter {
-      key   = "Name"
-      type  = "KEY_AND_VALUE"
-      value = var.ec2_tag_name
-    }
+  ec2_tag_filter {
+    key   = "Name"
+    type  = "KEY_AND_VALUE"
+    value = var.ec2_tag_name
   }
 
   deployment_style {

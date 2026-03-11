@@ -13,7 +13,7 @@ variable "pipeline_role_arn" {
 variable "artifact_bucket" {
   description = "S3 bucket for pipeline artifacts"
   type        = string
-  default     = "akshata-cicd-artifacts-2026"
+  default     = "akshata-cicd-artifacts-2006"
 }
 
 variable "connection_arn" {

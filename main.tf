@@ -33,9 +33,11 @@ module "ec2" {
 module "codebuild" {
   source = "./modules/codebuild"
 
-  project_name       = "My-CodeBuild-Project"
-  github_repo_url    = "https://github.com/akshataujawane/aws-cicd-pipeline-project.git"
-  artifact_bucket    = "akshata-cicd-artifacts-2026"
+  project_name    = "My-CodeBuild-Project"
+  github_repo_url = "https://github.com/akshataujawane/aws-cicd-pipeline-project.git"
+
+  artifact_bucket = "akshata-cicd-artifacts-2026"
+
   codebuild_role_arn = "arn:aws:iam::203848753188:role/CodeBuild-Service-Role"
 }
 
